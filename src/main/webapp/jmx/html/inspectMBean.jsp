@@ -4,12 +4,9 @@
    org.jboss.jmx.adaptor.control.Server,
    org.jboss.jmx.adaptor.control.AttrResultInfo,
    org.jboss.jmx.adaptor.model.*,
-   org.dom4j.io.HTMLWriter,
-   org.dom4j.tree.FlyweightCDATA,
    java.lang.reflect.Array,
    java.io.StringWriter,
-   java.beans.PropertyEditor,
-   org.jboss.util.propertyeditor.PropertyEditors"
+   java.beans.PropertyEditor"
 %>
 
 <%
@@ -54,39 +51,44 @@ catch(IOException e){}
 
     public String fixValue(Object value)
     {
-        if (value == null)
-            return null;
-        String s = String.valueOf(value);
-        StringWriter sw = new StringWriter();
-        HTMLWriter hw = new HTMLWriter(sw);
-        try
-        {
-           // hw.write(s); // strips whitespace
-           hw.write(new FlyweightCDATA(s));
-	   s = sw.toString();
-        }
-        catch(Exception e)
-        {
-        }
-        return s;
+        return translateMetaCharacters(value);
+        // TODO following is probably better,if we have HTMLWriter and FlyweightCDATA
+        // (org.dom4j.io.HTMLWriter, org.dom4j.tree.FlyweightCDATA)
+
+//        if (value == null)
+//            return null;
+//        String s = String.valueOf(value);
+//        StringWriter sw = new StringWriter();
+//        HTMLWriter hw = new HTMLWriter(sw);
+//        try
+//        {
+//           // hw.write(s); // strips whitespace
+//           hw.write(new FlyweightCDATA(s));
+//	   s = sw.toString();
+//        }
+//        catch(Exception e)
+//        {
+//        }
+//        return s;
     }
 
     public String fixValueForAttribute(Object value)
     {
-        if (value == null)
-            return null;
-      String s = String.valueOf(value);
-       StringWriter sw = new StringWriter();
-       HTMLWriter hw = new HTMLWriter(sw);
-       try
-       {
-          hw.write(s);
-          s = sw.toString();
-       }
-       catch(Exception e)
-       {
-       }
-       return s;
+        return translateMetaCharacters(value);
+//        if (value == null)
+//            return null;
+//      String s = String.valueOf(value);
+//       StringWriter sw = new StringWriter();
+//       HTMLWriter hw = new HTMLWriter(sw);
+//       try
+//       {
+//          hw.write(s);
+//          s = sw.toString();
+//       }
+//       catch(Exception e)
+//       {
+//       }
+//       return s;
     }
     
    /**
@@ -236,7 +238,7 @@ catch(IOException e){}
         out.print("<input type='radio' name='"+attrName+"' value='True' "+trueChecked+"/>True");
         out.print("<input type='radio' name='"+attrName+"' value='False' "+falseChecked+"/>False");
 	// For wrappers, enable a 'null' selection
-	if ( attrType.equals( "java.lang.Boolean" ) && PropertyEditors.isNullHandlingEnabled() )
+	if ( attrType.equals( "java.lang.Boolean" ) )
         {
 		out.print("<input type='radio' name='"+attrName+"' value='' "+naChecked+"/>True");
 	}

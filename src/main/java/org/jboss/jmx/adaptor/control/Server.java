@@ -21,30 +21,29 @@
  */
 package org.jboss.jmx.adaptor.control;
 
-import java.beans.IntrospectionException;
+import io.cloudsoft.jmxconsole.compatibility.Classes;
+import io.cloudsoft.jmxconsole.compatibility.Logger;
+import io.cloudsoft.jmxconsole.compatibility.MBeanServerLocator;
+
 import java.beans.PropertyEditor;
 import java.beans.PropertyEditorManager;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeMap;
+
 import javax.management.Attribute;
 import javax.management.AttributeList;
 import javax.management.JMException;
-import javax.management.MBeanInfo;
 import javax.management.MBeanAttributeInfo;
+import javax.management.MBeanInfo;
 import javax.management.MBeanOperationInfo;
 import javax.management.MBeanParameterInfo;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
-import javax.management.ReflectionException;
 
 import org.jboss.jmx.adaptor.model.DomainData;
 import org.jboss.jmx.adaptor.model.MBeanData;
-import org.jboss.logging.Logger;
-import org.jboss.mx.util.MBeanServerLocator;
-import org.jboss.util.Classes;
-import org.jboss.util.propertyeditor.PropertyEditors;
 
 /** Utility methods related to the MBeanServer interface
  *
@@ -58,7 +57,7 @@ public class Server
 
    public static MBeanServer getMBeanServer()
    {
-      return MBeanServerLocator.locateJBoss();
+      return MBeanServerLocator.locateMBeanServer();
    }
 
    public static Iterator getDomainData(String filter) throws JMException
@@ -185,26 +184,28 @@ public class Server
          }
          String attrType = attrInfo.getType();
          Attribute attr = null;
-         try
-         {
-            Object realValue = PropertyEditors.convertValue(value, attrType);
-            attr = new Attribute(attrName, realValue);
-         }
-         catch(ClassNotFoundException e)
-         {
-            String s = (attr != null) ? attr.getName() : attrType;
-            log.trace("Failed to load class for attribute: " + s, e);
-            throw new ReflectionException(e, "Failed to load class for attribute: " + s);
-         }
-         catch(IntrospectionException e)
-         {
-            log.trace("Skipped setting attribute: " + attrName + 
-                    ", cannot find PropertyEditor for type: " + attrType);
-            continue;
-         }
-
-         server.setAttribute(objName, attr);
-         newAttributes.add(attr);
+         // TODO so far we don't support conversion; Brooklyn.TypeCoercions would be userul here
+//         try
+//         {
+            throw new UnsupportedOperationException("conversion of '"+value+"' to "+attrType+" not supported");
+//            Object realValue = PropertyEditors.convertValue(value, attrType);
+//            attr = new Attribute(attrName, realValue);
+//         }
+//         catch(ClassNotFoundException e)
+//         {
+//            String s = (attr != null) ? attr.getName() : attrType;
+//            log.trace("Failed to load class for attribute: " + s, e);
+//            throw new ReflectionException(e, "Failed to load class for attribute: " + s);
+//         }
+//         catch(IntrospectionException e)
+//         {
+//            log.trace("Skipped setting attribute: " + attrName + 
+//                    ", cannot find PropertyEditor for type: " + attrType);
+//            continue;
+//         }
+//
+//         server.setAttribute(objName, attr);
+//         newAttributes.add(attr);
       }
       return newAttributes;
    }
@@ -234,26 +235,28 @@ public class Server
       for(int p = 0; p < typedArgs.length; p ++)
       {
          String arg = args[p];
-         try
-         {
-            Object argValue = PropertyEditors.convertValue(arg, argTypes[p]);
-            typedArgs[p] = argValue;
-         }
-         catch(ClassNotFoundException e)
-         {
-            log.trace("Failed to load class for arg"+p, e);
-            throw new ReflectionException(e, "Failed to load class for arg"+p);
-         }
-         catch(java.beans.IntrospectionException e)
-         {
-            // If the type is not java.lang.Object throw an exception
-            if( argTypes[p].equals("java.lang.Object") == false )
-               throw new javax.management.IntrospectionException(
-                  "Failed to find PropertyEditor for type: "+argTypes[p]);
-            // Just use the String arg
-            typedArgs[p] = arg;
-            continue;
-         }
+         // TODO so far we don't support conversion; Brooklyn.TypeCoercions would be userul here
+//       try
+//       {
+          throw new UnsupportedOperationException("conversion of '"+arg+"' to "+argTypes[p]+" not supported");
+//            Object argValue = PropertyEditors.convertValue(arg, argTypes[p]);
+//            typedArgs[p] = argValue;
+//         }
+//         catch(ClassNotFoundException e)
+//         {
+//            log.trace("Failed to load class for arg"+p, e);
+//            throw new ReflectionException(e, "Failed to load class for arg"+p);
+//         }
+//         catch(java.beans.IntrospectionException e)
+//         {
+//            // If the type is not java.lang.Object throw an exception
+//            if( argTypes[p].equals("java.lang.Object") == false )
+//               throw new javax.management.IntrospectionException(
+//                  "Failed to find PropertyEditor for type: "+argTypes[p]);
+//            // Just use the String arg
+//            typedArgs[p] = arg;
+//            continue;
+//         }
       }
       Object opReturn = server.invoke(objName, opName, typedArgs, argTypes);
       return new OpResultInfo(opName, argTypes, args, opReturn);

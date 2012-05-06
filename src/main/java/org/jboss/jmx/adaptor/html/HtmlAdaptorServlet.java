@@ -21,6 +21,8 @@
  */
 package org.jboss.jmx.adaptor.html;
 
+import io.cloudsoft.jmxconsole.compatibility.Logger;
+
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.security.AccessController;
@@ -43,7 +45,6 @@ import javax.servlet.http.HttpSession;
 import org.jboss.jmx.adaptor.control.OpResultInfo;
 import org.jboss.jmx.adaptor.control.Server;
 import org.jboss.jmx.adaptor.model.MBeanData;
-import org.jboss.logging.Logger;
 
 /** The HTML adaptor controller servlet.
  *
