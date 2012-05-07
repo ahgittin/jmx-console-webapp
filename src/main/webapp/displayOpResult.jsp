@@ -44,29 +44,33 @@ catch(IOException e){}
       <input type="button" value="Back to Agent" onClick="javascript:location='HtmlAdaptor?action=displayMBeans'"/>
       <input type="button" value="Back to MBean" onClick="javascript:location='HtmlAdaptor?action=inspectMBean&amp;name=<%= request.getParameter("name") %>'"/>
     </p>
-    <p>
-    <%
-      out.print("<input type='button' onClick=\"location='HtmlAdaptor?action=invokeOpByName");
-      out.print("&amp;name=" + request.getParameter("name"));
-      out.print("&amp;methodName=" + opResultInfo.name );
-    
-      for (int i=0; i<opResultInfo.args.length; i++)
-      {
-        out.print("&amp;argType=" + opResultInfo.signature[i]);
-        out.print("&amp;arg" + i + "=" + opResultInfo.args[i]);
-      }
-    
-      out.println("'\" value='Reinvoke MBean Operation'/>");
-    %>
-    </p>
   </td>
  </tr>
 </table>
 
+    <p>Invoked: <b>
+    <%
+      out.print(opResultInfo.name+"( ");
+    
+      for (int i=0; i<opResultInfo.args.length; i++)
+      {
+        if (i>0) out.print(", ");
+        out.print(opResultInfo.args[i]);
+      }
+    
+      out.println(" )");
+    %>
+    </b></p>
+    
+    <br></br>
+    <p>
 <%
+   if( opResultInfo.error != null ) {
+       out.println("Operation returned an error: <pre>"+opResultInfo.error+"</pre>");
+   } else
    if( opResultInfo.result == null )
    {
-     out.println("Operation completed successfully without a return value!");
+     out.println("Operation completed successfully with no (or null) return value.");
    }
    else
    {
@@ -89,5 +93,25 @@ catch(IOException e){}
       if( hasPreTag == false ) out.println("</pre>");
    }
 %>
+    </p>
+    
+    <br></br>
+    
+    <p>
+    <%
+      out.print("<input type='button' onClick=\"location='HtmlAdaptor?action=invokeOpByName");
+      out.print("&amp;name=" + request.getParameter("name"));
+      out.print("&amp;methodName=" + opResultInfo.name );
+    
+      for (int i=0; i<opResultInfo.args.length; i++)
+      {
+        out.print("&amp;argType=" + opResultInfo.signature[i]);
+        out.print("&amp;arg" + i + "=" + opResultInfo.args[i]);
+      }
+    
+      out.println("'\" value='Reinvoke MBean Operation'/>");
+    %>
+    </p>
+    
 </body>
 </html>

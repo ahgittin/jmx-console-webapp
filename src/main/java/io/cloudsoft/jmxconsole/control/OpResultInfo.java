@@ -13,6 +13,7 @@ public class OpResultInfo
    public String[] signature;
    public String[] args;
    public Object   result;
+   public Object   error = null;
 
    public OpResultInfo() {
    }
@@ -23,5 +24,10 @@ public class OpResultInfo
       this.signature = signature;
       this.args      = args;
       this.result    = result;
+   }
+
+   public OpResultInfo(String name, String[] signature, String[] args, Object result, Exception e) {
+       this(name, signature, args, result);
+       this.error = e;
    }
 }

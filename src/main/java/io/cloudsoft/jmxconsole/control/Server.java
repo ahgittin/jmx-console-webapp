@@ -22,6 +22,7 @@ import javax.management.MBeanOperationInfo;
 import javax.management.MBeanParameterInfo;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
+import javax.management.ReflectionException;
 
 
 /** Utility methods related to the MBeanServer interface
@@ -214,30 +215,26 @@ public class Server
       for(int p = 0; p < typedArgs.length; p ++)
       {
          String arg = args[p];
-         // TODO so far we don't support conversion; Brooklyn.TypeCoercions would be userul here
-//       try
-//       {
-          throw new UnsupportedOperationException("conversion of '"+arg+"' to "+argTypes[p]+" not supported");
-//            Object argValue = PropertyEditors.convertValue(arg, argTypes[p]);
-//            typedArgs[p] = argValue;
-//         }
-//         catch(ClassNotFoundException e)
-//         {
-//            log.trace("Failed to load class for arg"+p, e);
-//            throw new ReflectionException(e, "Failed to load class for arg"+p);
-//         }
-//         catch(java.beans.IntrospectionException e)
-//         {
-//            // If the type is not java.lang.Object throw an exception
-//            if( argTypes[p].equals("java.lang.Object") == false )
-//               throw new javax.management.IntrospectionException(
-//                  "Failed to find PropertyEditor for type: "+argTypes[p]);
-//            // Just use the String arg
-//            typedArgs[p] = arg;
-//            continue;
-//         }
+       try
+       {
+            Object argValue = Classes.convertValue(arg, argTypes[p]);
+            typedArgs[p] = argValue;
+         }
+         catch(Exception e)
+         {
+            // If the type is not java.lang.Object throw an exception
+            if( argTypes[p].equals("java.lang.Object") == false )
+                throw new UnsupportedOperationException("conversion of '"+arg+"' to "+argTypes[p]+" not supported: "+e);
+            // Just use the String arg
+            typedArgs[p] = arg;
+            continue;
+         }
       }
-      Object opReturn = server.invoke(objName, opName, typedArgs, argTypes);
-      return new OpResultInfo(opName, argTypes, args, opReturn);
+      try {
+          Object opReturn = server.invoke(objName, opName, typedArgs, argTypes);
+          return new OpResultInfo(opName, argTypes, args, opReturn);
+      } catch (Exception e) {
+          return new OpResultInfo(opName, argTypes, args, null, e);
+      }
    }
 }
