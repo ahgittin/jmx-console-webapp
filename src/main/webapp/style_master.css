@@ -1,44 +1,101 @@
-html {
-     overflow: -moz-scrollbars-vertical;
-     overflow-y: scroll;
+A{
+text-decoration:none
 }
-
-body {
-    font-family: Arial, Verdana, sans-serif;
-    color: #222;
+A:LINK{
+color:#101210
 }
-
-a { color:#484; text-decoration:none; }
-a:visited { color: #363; }
-a:hover{ color:#2a2; text-decoration:underline; }
-/*
-a { color: #204818; text-decoration: none; }
-a:visited { color: #002808; }
-a:hover { text-decoration: underline; }
-*/
-
-h1 { color: #68aa70; font-weight: normal; }
-h2 { color: #185018; font-weight: normal; }
-
-
-/* Code Snippets */
+A:VISITED{
+color:#303430
+}
+A:HOVER{
+color:#606460;
+text-decoration: underline;
+}
+A:ACTIVE{
+color:#FF0000
+}
+BODY{
+background-color:#FFFFFF;
+font-family:Tahoma,Verdana,sans-serif;
+font-size:8pt
+}
+H1{
+font-size:16pt;
+font-weight:bold
+}
+H2{
+margin:2px;
+padding:2px;
+font-size:12pt;
+font-weight:bold
+}
+H3{
+margin:2px;
+padding:2px;
+font-size:10pt;
+font-weight:normal
+}
+IMG{
+border:0
+}
+INPUT{
+font-family:Tahoma,Verdana,sans-serif;
+font-size:8pt
+}
+INPUT.readonly{
+border:1px solid #999999;
+background-color:#C0C0C0
+}
+INPUT.writable{
+border:1px solid #999999;
+background-color:#FFFFFF
+}
+TD{
+background-color:#E0E0E0;
+font-family:Tahoma,Verdana,sans-serif;
+font-size:8pt
+}
+TD.arg{
+font-family:Tahoma,Verdana,sans-serif;
+font-size:8pt;
+padding-right:6px;
+}
+TD.param{
+color:#000400;
+font-size:8pt;
+font-weight:bold;
+font-family:Tahoma,Verdana,sans-serif
+}
+TH{
+cellspacing:2px;
+padding-bottom:1px;
+padding-left:4px;
+padding-right:4px;
+padding-top:1px;
+background-color:#999999;
+color:#000000;
+font-family:Tahoma,Verdana,sans-serif;
+font-size:8pt;
+font-weight:bold
+}
 pre {
-    font-family: Consolas, Lucida Console, Monaco, monospace;
-       /* Courier, sans-serif  'Droid Sans Mono' */
-    font-size: 90%;
-    background-color:#f6f6f6;
-    padding: 1em;
+  padding: 1px;
+  margin: 0px;
+  white-space: pre-wrap;       /* css-3 */
+  white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+  white-space: -pre-wrap;      /* Opera 4-6 */
+  white-space: -o-pre-wrap;    /* Opera 7 */
+  word-wrap: break-word;       /* Internet Explorer 5.5+ */
 }
-code {
-    font-family: Consolas, Lucida Console, Monaco, monospace;
-       /* Courier, sans-serif  'Droid Sans Mono' */
-    font-size: 90%;
-    /* background-color:#f4f4f4; */
+* .error {
+  font-size: 8pt;
+  color: red;
 }
-
-
-/* Configuration for pygments syntax highlighting */
-div.highlight code.java span.err{
-    /* Single quotes were being highlighted as errors, so just turn that off. */
-    border: none;
+input[type="button"], input[type="submit"] {
+    border: 2px outset;
+    background-color: #D0D2D0;
+}
+UL {
+	margin: 6px;
+    padding-left: 20px;
 }

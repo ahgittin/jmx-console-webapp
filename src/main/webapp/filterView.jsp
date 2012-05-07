@@ -12,15 +12,15 @@
 
 <table width="226" cellspacing="0" cellpadding="0" border="0">
 <tr>
-<td align="center" width="226"><img src="images/logo.png" border="0" alt="Brooklyn"/></td>
+<td align="center" width="226"><img src="images/logo.png" border="0" width="226" alt="Brooklyn"/></td>
 </tr>
 </table>
 
 &nbsp;
 
-<table width="226" cellspacing="0" cellpadding="0" border="0">
-<tr><td><h2>Object Name Filter</h2></td></tr>
-<tr><td><h3><a href="HtmlAdaptor?action=displayMBeans&filter=" target="ObjectNodeView">Remove Object Name Filter</a></h3></td></tr>
+<table width="226" cellspacing="0" cellpadding="0" border="0" style="background-color: #E0E0E0; padding: 6px;">
+<tr><td><h2>ObjectName Instances</h2></td></tr>
+<tr><td> <br/> </td></tr>
 <%
    Iterator mbeans = (Iterator) Server.getDomainData("");
    int i=0;
@@ -34,6 +34,8 @@
       out.println(" </tr>");
    }
 %>
+<tr><td> <br/> </td></tr>
+<tr><td><i><b><a href="HtmlAdaptor?action=displayMBeans&filter=" target="ObjectNodeView">Remove Object Name Filter</a></b></i></td></tr>
 </table>
 
 </body>

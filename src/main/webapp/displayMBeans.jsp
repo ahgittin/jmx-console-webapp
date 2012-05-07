@@ -57,7 +57,7 @@
       <td height="105" align="center"><h1>JMX Agent View</h1><h3><%= hostInfo%> - <%= serverName %></h3></td>
       <td height="105" align="center" width="300" nowrap>
         <form action="HtmlAdaptor?action=displayMBeans" method="post" name="applyFilter" id="applyFilter">
-          ObjectName Filter (e.g.: "jboss:*", "*:service=invoker,*"):<br/>
+          ObjectName Filter (e.g.: "java.lang:*", "*:type=Threading,*"):<br/>
           <input type="text" name="filter" size="20" value="<%= request.getAttribute("filter")%>" />
           <input type="submit" name="apply" value="Apply Filter" />
           <input type="button" onClick="javascript:location='HtmlAdaptor?filter='" value="Clear Filter" />

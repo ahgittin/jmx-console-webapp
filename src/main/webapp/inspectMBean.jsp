@@ -173,7 +173,7 @@ catch(IOException e){}
 
 <!-- 1 -->
 
-<table width="100%" cellspacing="1" cellpadding="1" border="1" align="center">
+<table width="100%" cellspacing="1" cellpadding="3" border="1" align="center">
  <tr><th rowspan="<%= size + 1 %>">Name</th><td><b>Domain</b></td><td><%= objectName.getDomain() %></td></tr>
 <%
    Iterator it = properties.keySet().iterator();
@@ -185,7 +185,7 @@ catch(IOException e){}
    }
 %>
  <tr><th>Java Class</th><td colspan="2"><jsp:getProperty name='mbeanData' property='className'/></td></tr>
- <tr><th>Description</th><td colspan="2"><%= fixDescription(mbeanInfo.getDescription())%></td></tr>
+ <tr><th>Description</th><td colspan="2"><%= fixValue(fixDescription(mbeanInfo.getDescription()))%></td></tr>
 </table>
 
 <!-- 2 -->
@@ -193,12 +193,11 @@ catch(IOException e){}
 <form method="post" action="HtmlAdaptor">
  <input type="hidden" name="action" value="updateAttributes" />
  <input type="hidden" name="name" value="<%= objectNameString %>" />
- <table width="100%" cellspacing="1" cellpadding="1" border="1" align="center">
+ <table width="100%" cellspacing="1" cellpadding="3" border="1" align="center">
   <tr>
    <th>Attribute Name</th>
    <th>Access</th>
    <th>Type</th>
-   <th>Description</th>
    <th>Attribute Value</th>
   </tr>
 <%
@@ -217,14 +216,12 @@ catch(IOException e){}
       access += "W";
       hasWriteableAttribute=true;
     }
-    String attrDescription = fixDescription(attrInfo.getDescription());
+    String attrDescription = fixValueForAttribute(fixDescription(attrInfo.getDescription()));
     out.println("  <tr>");
-    out.println("   <td class='param'>"+attrName+"</td>");
+    out.println("   <td class='param' title='"+attrDescription+"'>"+attrName+"</td>");
     out.println("   <td align='center'>"+access+"</td>");
     out.println("   <td>"+attrType+"</td>");
-    out.println("   <td>"+attrDescription+"</td>");
-    out.println("   <td>");
-    out.println("    <pre>");
+    out.println("   <td width='50%'>");
 
     if( attrInfo.isWritable() )
     {
@@ -234,14 +231,16 @@ catch(IOException e){}
         Boolean value = attrValue == null || "".equals( attrValue ) ? null : Boolean.valueOf(attrValue);
         String trueChecked = (value == Boolean.TRUE ? "checked" : "");
         String falseChecked = (value == Boolean.FALSE ? "checked" : "");
-	String naChecked = value == null ? "checked" : "";
-        out.print("<input type='radio' name='"+attrName+"' value='True' "+trueChecked+"/>True");
+        String naChecked = value == null ? "checked" : "";
+        out.print("<div style='vertical-align: top;'>");
+        out.print("<input type='radio' name='"+attrName+"' value='True' "+trueChecked+"/>True &nbsp; &nbsp;");
         out.print("<input type='radio' name='"+attrName+"' value='False' "+falseChecked+"/>False");
 	// For wrappers, enable a 'null' selection
 	if ( attrType.equals( "java.lang.Boolean" ) )
         {
 		out.print("<input type='radio' name='"+attrName+"' value='' "+naChecked+"/>True");
 	}
+        out.print("</div>");
 
       }
       else if( attrInfo.isReadable() )
@@ -276,6 +275,7 @@ catch(IOException e){}
       }
       else if( attrType.startsWith("["))
       {
+          out.println("    <pre>");
         Object arrayObject = Server.getMBeanAttributeObject(objectNameString, attrName);
         if (arrayObject != null)
         {
@@ -284,10 +284,13 @@ catch(IOException e){}
             out.println(fixValue(Array.get(arrayObject,i)));
           }
         }
+        out.println("    </pre>");
       }
       else
       {
+        out.println("    <pre>");
         out.print(fixValue(attrValue));
+        out.println("    </pre>");
       }
     }
 
@@ -298,14 +301,13 @@ catch(IOException e){}
         out.print("<p align='center'><a href='HtmlAdaptor?action=inspectMBean&name="+URLEncoder.encode(attrValue,"UTF-8")+"'>View MBean</a></p>");
       }
     }
-    out.println("    </pre>");
     out.println("   </td>");
     out.println("  </tr>");
   }
 
   if(hasWriteableAttribute)
   {
-    out.println(" <tr><td colspan='4'></td><td class='arg'><p align='center'><input type='submit' value='Apply Changes'/></p></td></tr>");
+    out.println(" <tr><td colspan='3'></td><td class='arg'><p align='center'><input type='submit' value='Apply Changes'/></p></td></tr>");
   }
 %>
  </table>
@@ -316,12 +318,11 @@ catch(IOException e){}
 <%
 if (operationInfo.length > 0)
 {
-  out.println(" <table width='100%' cellspacing='1' cellpadding='1' border='1' align='center'>");
+  out.println(" <table width='100%' cellspacing='1' cellpadding='3' border='1' align='center'>");
   out.println("  <tr>");
   out.println("   <th>Operation</th>");
   out.println("   <th>Return Type</th>");
-  out.println("   <th>Description</th>");
-  out.println("   <th>Parameters</th>");
+  out.println("   <th width='50%'>Parameters</th>");
   out.println("  </tr>");
 
   for(int a = 0; a < operationInfo.length; a ++)
@@ -341,15 +342,15 @@ if (operationInfo.length > 0)
     {
       MBeanParameterInfo[] sig = opInfo.getSignature();
       out.println("  <tr>");
-      out.println("   <td class='param'>"+opInfo.getName()+"</td>");
+      out.println("   <td class='param' title='"+fixDescription(opInfo.getDescription())+"'>"+opInfo.getName()+"</td>");
       out.println("   <td>"+opInfo.getReturnType()+"</td>");
-      out.println("   <td>"+fixDescription(opInfo.getDescription())+"</td>");
-      out.println("   <td align='center'>");
+      out.println("   <td align='center' width='50%' style='padding: 8px 4px;'>");
       out.println("    <form method='post' action='HtmlAdaptor'>");
       out.println("     <input type='hidden' name='action' value='invokeOp'/>");
       out.println("     <input type='hidden' name='name' value='"+quotedObjectNameString+"'/>");
       out.println("     <input type='hidden' name='methodIndex' value='"+a+"'/>");
 
+      out.println("     <table width='100%' cellspacing='6' cellpadding='0' border='0'><tr><td>");
       if( sig.length > 0 )
       {
         out.println("     <table width='100%' cellspacing='1' cellpadding='1' border='0'>");
@@ -362,16 +363,17 @@ if (operationInfo.length > 0)
           {
             pname = "arg"+p;
           }
-          String pdesc = fixDescription(paramInfo.getDescription());
+          String pdesc = fixValueForAttribute(fixDescription(paramInfo.getDescription()));
           out.println("      <tr>");
-          out.println("       <td class='arg'>"+pname+"</td>");
           out.println("       <td class='arg'>"+ptype+"</td>");
-          out.println("       <td class='arg'>"+pdesc+"</td>");
-          out.print("       <td class='arg' width='50'>");
+          out.println("       <td class='arg' title='"+pdesc+"'><b>"+pname+"</b></td>");
+          out.print("       <td class='arg' align='left' width='100%'>");
           if(ptype.equals("boolean")||ptype.equals("java.lang.Boolean"))
           {
-            out.print("<input type='radio' name='arg"+p+"' value='True' checked/>True");
+            out.print("<div style='vertical-align: top;'> &nbsp;");
+            out.print("<input type='radio' name='arg"+p+"' value='True' checked/>True &nbsp; &nbsp;");
             out.print("<input type='radio' name='arg"+p+"' value='False'/>False");
+            out.print("</div>");
           }
           else
           {
@@ -386,7 +388,9 @@ if (operationInfo.length > 0)
       {
         out.println("     [no parameters]<BR>");
       }
+      out.println("     </td><td align='right'>");
       out.println("     <input type='submit' value='Invoke'/>");
+      out.println("     </td></tr></table>");
       out.println("    </form>");
       out.println("  </td>");
       out.println(" </tr>");

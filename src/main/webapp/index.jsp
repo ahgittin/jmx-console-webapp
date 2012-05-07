@@ -33,7 +33,7 @@
 <title>JMX Console WebApp - <%= hostInfo %></title>
 </head>
 <!-- frames -->
-<frameset  cols="255,*">
+<frameset  cols="295,*">
     <frame name="ObjectFilterView" src="filterView.jsp"                   marginwidth="10" marginheight="10" scrolling="auto" frameborder="0">
     <frame name="ObjectNodeView"   src="HtmlAdaptor?action=displayMBeans" marginwidth="10"  marginheight="10" scrolling="auto" frameborder="0">
     <noframes>A frames enabled browser is required for the main view</noframes>
