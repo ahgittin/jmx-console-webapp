@@ -12,7 +12,7 @@ Heavily based on code in JBoss 6 (but appears to be dropped in JBoss 7).  **Than
 To point it at a remote endpoint, add e.g.  jmxconsole.webapp.target.url=service:jmx:rmi:///jndi/rmi://10.0.0.1:10100/jmxrmi
 to the http request (or a servlet attribute, or system property, then finally it will default to a same-jvm platform server).
 
-![Screenshot](docs/screenshot.png "Screenshot")]
+![Screenshot](https://github.com/ahgittin/jmx-console-webapp/blob/master/docs/screenshot.png "Screenshot")]
 
 
 ## Wishlist
