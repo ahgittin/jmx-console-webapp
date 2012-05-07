@@ -23,8 +23,6 @@ package io.cloudsoft.jmxconsole.model;
 
 import java.util.Arrays;
 import java.util.TreeSet;
-import javax.management.MBeanInfo;
-import javax.management.ObjectName;
 
 /** The MBeanData for a given JMX domain name
  *

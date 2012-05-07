@@ -4,6 +4,7 @@
    io.cloudsoft.jmxconsole.control.Server,
    io.cloudsoft.jmxconsole.control.AttrResultInfo,
    io.cloudsoft.jmxconsole.model.*,
+   io.cloudsoft.jmxconsole.html.*,
    java.lang.reflect.Array,
    java.io.StringWriter,
    java.beans.PropertyEditor"
@@ -207,7 +208,8 @@ catch(IOException e){}
     MBeanAttributeInfo attrInfo = attributeInfo[a];
     String attrName = attrInfo.getName();
     String attrType = attrInfo.getType();
-    AttrResultInfo attrResult = Server.getMBeanAttributeResultInfo(objectNameString, attrInfo);
+    AttrResultInfo attrResult = RequestState.getInstance(request).getServer().
+            getMBeanAttributeResultInfo(objectNameString, attrInfo);
     String attrValue = attrResult.getAsText();
     String access = "";
     if( attrInfo.isReadable() ) access += "R";
@@ -264,7 +266,8 @@ catch(IOException e){}
     {
       if( attrType.equals("[Ljavax.management.ObjectName;") )
       {
-        ObjectName[] names = (ObjectName[]) Server.getMBeanAttributeObject(objectNameString, attrName);
+        ObjectName[] names = (ObjectName[]) RequestState.getInstance(request).getServer().
+                getMBeanAttributeObject(objectNameString, attrName);
         if( names != null )
         {
           for( int i = 0; i < names.length; i++ )
@@ -276,7 +279,8 @@ catch(IOException e){}
       else if( attrType.startsWith("["))
       {
           out.println("    <pre>");
-        Object arrayObject = Server.getMBeanAttributeObject(objectNameString, attrName);
+        Object arrayObject = RequestState.getInstance(request).getServer().
+                getMBeanAttributeObject(objectNameString, attrName);
         if (arrayObject != null)
         {
           for (int i = 0; i < Array.getLength(arrayObject); ++i)

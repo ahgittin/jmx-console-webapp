@@ -2,27 +2,25 @@ package io.cloudsoft.jmxconsole.control;
 
 import io.cloudsoft.jmxconsole.compatibility.Classes;
 import io.cloudsoft.jmxconsole.compatibility.Logger;
-import io.cloudsoft.jmxconsole.compatibility.MBeanServerLocator;
 import io.cloudsoft.jmxconsole.model.DomainData;
 import io.cloudsoft.jmxconsole.model.MBeanData;
 
 import java.beans.PropertyEditor;
 import java.beans.PropertyEditorManager;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeMap;
 
-import javax.management.Attribute;
 import javax.management.AttributeList;
 import javax.management.JMException;
 import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanInfo;
 import javax.management.MBeanOperationInfo;
 import javax.management.MBeanParameterInfo;
-import javax.management.MBeanServer;
+import javax.management.MBeanServerConnection;
 import javax.management.ObjectName;
-import javax.management.ReflectionException;
 
 
 /** Utility methods related to the MBeanServer interface
@@ -34,15 +32,19 @@ import javax.management.ReflectionException;
 public class Server
 {
    static Logger log = Logger.getLogger(Server.class);
+   private MBeanServerConnection mbs;
 
-   public static MBeanServer getMBeanServer()
-   {
-      return MBeanServerLocator.locateMBeanServer();
+   public Server(MBeanServerConnection mbs) {
+       this.mbs = mbs;
+   }
+   
+   public MBeanServerConnection getMBeanServer() {
+       return mbs;
    }
 
-   public static Iterator getDomainData(String filter) throws JMException
+   public Iterator getDomainData(String filter) throws JMException, IOException
    {
-      MBeanServer server = getMBeanServer();
+      MBeanServerConnection server = getMBeanServer();
       TreeMap domainData = new TreeMap();
       if( server != null )
       {
@@ -70,27 +72,32 @@ public class Server
       return domainDataIter;
    }
 
-   public static MBeanData getMBeanData(String name) throws JMException
+   public MBeanData getMBeanData(String name) throws JMException, IOException
    {
-      MBeanServer server = getMBeanServer();
+      MBeanServerConnection server = getMBeanServer();
       ObjectName objName = new ObjectName(name);
       MBeanInfo info = server.getMBeanInfo(objName);
       MBeanData mbeanData = new MBeanData(objName, info);
       return mbeanData;
    }
 
-   public static Object getMBeanAttributeObject(String name, String attrName)
+   public Object getMBeanAttributeObject(String name, String attrName)
       throws JMException
    {
-      MBeanServer server = getMBeanServer();
+      MBeanServerConnection server = getMBeanServer();
       ObjectName objName = new ObjectName(name);
-      Object value = server.getAttribute(objName, attrName);
+      Object value;
+    try {
+        value = server.getAttribute(objName, attrName);
+    } catch (IOException e) {
+        value = e;
+    }
       return value;
    }
 
-   public static String getMBeanAttribute(String name, String attrName) throws JMException
+   public String getMBeanAttribute(String name, String attrName) throws JMException
    {
-      MBeanServer server = getMBeanServer();
+      MBeanServerConnection server = getMBeanServer();
       ObjectName objName = new ObjectName(name);
       String value = null;
       try
@@ -102,15 +109,17 @@ public class Server
       catch(JMException e)
       {
          value = e.getMessage();
-      }
+      } catch (IOException e) {
+         value = e.getMessage();
+    }
       return value;
    }
 
-   public static AttrResultInfo getMBeanAttributeResultInfo(String name, MBeanAttributeInfo attrInfo)
+   public AttrResultInfo getMBeanAttributeResultInfo(String name, MBeanAttributeInfo attrInfo)
       throws JMException
    {
       ClassLoader loader = Thread.currentThread().getContextClassLoader();
-      MBeanServer server = getMBeanServer();
+      MBeanServerConnection server = getMBeanServer();
       ObjectName objName = new ObjectName(name);
       String attrName = attrInfo.getName();
       String attrType = attrInfo.getType();
@@ -144,9 +153,9 @@ public class Server
       return new AttrResultInfo(attrName, editor, value, throwable);
    }
 
-   public static AttributeList setAttributes(String name, HashMap attributes) throws JMException
+   public AttributeList setAttributes(String name, HashMap attributes) throws JMException, IOException
    {
-      MBeanServer server = getMBeanServer();
+      MBeanServerConnection server = getMBeanServer();
       ObjectName objName = new ObjectName(name);
       MBeanInfo info = server.getMBeanInfo(objName);
       MBeanAttributeInfo[] attributesInfo = info.getAttributes();
@@ -163,8 +172,8 @@ public class Server
             continue;
          }
          String attrType = attrInfo.getType();
-         Attribute attr = null;
          // TODO so far we don't support conversion; Brooklyn.TypeCoercions would be userul here
+//         Attribute attr = null;
 //         try
 //         {
             throw new UnsupportedOperationException("conversion of '"+value+"' to "+attrType+" not supported");
@@ -190,9 +199,9 @@ public class Server
       return newAttributes;
    }
 
-   public static OpResultInfo invokeOp(String name, int index, String[] args) throws JMException
+   public OpResultInfo invokeOp(String name, int index, String[] args) throws JMException, IOException
    {
-      MBeanServer server = getMBeanServer();
+      MBeanServerConnection server = getMBeanServer();
       ObjectName objName = new ObjectName(name);
       MBeanInfo info = server.getMBeanInfo(objName);
       MBeanOperationInfo[] opInfo = info.getOperations();
@@ -204,11 +213,11 @@ public class Server
       return invokeOpByName(name, op.getName(), argTypes, args);
    }
 
-   public static OpResultInfo invokeOpByName(String name, String opName,
+   public OpResultInfo invokeOpByName(String name, String opName,
       String[] argTypes, String[] args)
-      throws JMException
+      throws JMException, IOException
    {
-      MBeanServer server = getMBeanServer();
+      MBeanServerConnection server = getMBeanServer();
       ObjectName objName = new ObjectName(name);
       int length = argTypes != null ? argTypes.length : 0;
       Object[] typedArgs = new Object[length];

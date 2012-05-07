@@ -32,7 +32,9 @@ import javax.servlet.http.HttpSession;
  */
 public class HtmlAdaptorServlet extends HttpServlet
 {
+   private static final long serialVersionUID = 1L;
    private static Logger log = Logger.getLogger(HtmlAdaptorServlet.class);
+    
    private static final String ACTION_PARAM = "action";
    private static final String FILTER_PARAM = "filter";
    private static final String DISPLAY_MBEANS_ACTION = "displayMBeans";
@@ -69,6 +71,8 @@ public class HtmlAdaptorServlet extends HttpServlet
    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException
    {
+      RequestState.getInstance(request);
+      
       String action = request.getParameter(ACTION_PARAM);
 
       if( action == null )
@@ -172,14 +176,14 @@ public class HtmlAdaptorServlet extends HttpServlet
       Iterator mbeans;
       try
       {
-         mbeans = getDomainData(filter);
+         mbeans = getDomainData(request, filter);
       }
       catch (Exception e)
       {
          request.setAttribute("filterError", e.getMessage());
          try
          {
-            mbeans = getDomainData("");
+            mbeans = getDomainData(request, "");
          }
          catch (Exception e1)
          {
@@ -201,7 +205,7 @@ public class HtmlAdaptorServlet extends HttpServlet
       log.trace("inspectMBean, name="+name);
       try
       {
-         MBeanData data = getMBeanData(name);
+         MBeanData data = getMBeanData(request, name);
          request.setAttribute("mbeanData", data);
          RequestDispatcher rd = this.getServletContext().getRequestDispatcher("/inspectMBean.jsp");
          rd.forward(request, response);
@@ -236,8 +240,9 @@ public class HtmlAdaptorServlet extends HttpServlet
 
       try
       {
-         AttributeList newAttributes = setAttributes(name, attributes);
-         MBeanData data = getMBeanData(name);
+//         AttributeList newAttributes = 
+                 setAttributes(request, name, attributes);
+         MBeanData data = getMBeanData(request, name);
          request.setAttribute("mbeanData", data);
          RequestDispatcher rd = this.getServletContext().getRequestDispatcher("/inspectMBean.jsp");
          rd.forward(request, response);
@@ -264,7 +269,7 @@ public class HtmlAdaptorServlet extends HttpServlet
      
       try
       {
-         OpResultInfo opResult = invokeOp(name, index, args);
+         OpResultInfo opResult = invokeOp(request, name, index, args);
          request.setAttribute("opResultInfo", opResult);
          RequestDispatcher rd = this.getServletContext().getRequestDispatcher("/displayOpResult.jsp");
          rd.forward(request, response);
@@ -289,7 +294,7 @@ public class HtmlAdaptorServlet extends HttpServlet
          throw new ServletException("No methodName given in invokeOpByName form");
       try
       {
-         OpResultInfo opResult = invokeOpByName(name, methodName, argTypes, args);
+         OpResultInfo opResult = invokeOpByName(request, name, methodName, argTypes, args);
          request.setAttribute("opResultInfo", opResult);
          RequestDispatcher rd = this.getServletContext().getRequestDispatcher("/displayOpResult.jsp");
          rd.forward(request, response);
@@ -327,60 +332,64 @@ public class HtmlAdaptorServlet extends HttpServlet
      s = s.replaceAll(">","&gt;");
      return s;
    }
-   
-   private MBeanData getMBeanData(final String name) throws PrivilegedActionException
+
+   private Server getServer(HttpServletRequest request) {
+       return new Server(RequestState.getInstance(request).getMBeanServerConnection());
+   }
+
+   private MBeanData getMBeanData(final HttpServletRequest request, final String name) throws PrivilegedActionException
    {
       return AccessController.doPrivileged(new PrivilegedExceptionAction<MBeanData>()
       {
          public MBeanData run() throws Exception
          {
-            return Server.getMBeanData(name);
+            return getServer(request).getMBeanData(name);
          }
       });
    }
    
    @SuppressWarnings("unchecked")
-   private Iterator getDomainData(final String filter) throws PrivilegedActionException
+   private Iterator getDomainData(final HttpServletRequest request, final String filter) throws PrivilegedActionException
    {
       return AccessController.doPrivileged(new PrivilegedExceptionAction<Iterator>()
       {
          public Iterator run() throws Exception
          {
-            return Server.getDomainData(filter);
+            return getServer(request).getDomainData(filter);
          }
       });
    }
    
-   private OpResultInfo invokeOp(final String name, final int index, final String[] args) throws PrivilegedActionException
+   private OpResultInfo invokeOp(final HttpServletRequest request, final String name, final int index, final String[] args) throws PrivilegedActionException
    {
       return AccessController.doPrivileged(new PrivilegedExceptionAction<OpResultInfo>()
       {
          public OpResultInfo run() throws Exception
          {
-            return Server.invokeOp(name, index, args);
+            return getServer(request).invokeOp(name, index, args);
          }
       });
    }
    
-   private OpResultInfo invokeOpByName(final String name, final String methodName,final String[] argTypes, final String[] args) throws PrivilegedActionException
+   private OpResultInfo invokeOpByName(final HttpServletRequest request, final String name, final String methodName,final String[] argTypes, final String[] args) throws PrivilegedActionException
    {
       return AccessController.doPrivileged(new PrivilegedExceptionAction<OpResultInfo>()
       {
          public OpResultInfo run() throws Exception
          {
-            return Server.invokeOpByName(name, methodName, argTypes, args);
+            return getServer(request).invokeOpByName(name, methodName, argTypes, args);
          }
       });
    }
    
    @SuppressWarnings({"unchecked"})
-   private AttributeList setAttributes(final String name, final HashMap attributes) throws PrivilegedActionException
+   private AttributeList setAttributes(final HttpServletRequest request, final String name, final HashMap attributes) throws PrivilegedActionException
    {
       return AccessController.doPrivileged(new PrivilegedExceptionAction<AttributeList>()
       {
          public AttributeList run() throws Exception
          {
-            return Server.setAttributes(name, attributes);
+            return getServer(request).setAttributes(name, attributes);
          }
       });
    }

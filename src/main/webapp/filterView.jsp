@@ -1,6 +1,6 @@
 <%@page 
     contentType="text/html" 
-    import="java.util.*,io.cloudsoft.jmxconsole.control.*,io.cloudsoft.jmxconsole.model.*,java.io.*" %>
+    import="java.util.*,io.cloudsoft.jmxconsole.control.*,io.cloudsoft.jmxconsole.html.*,io.cloudsoft.jmxconsole.model.*,java.io.*" %>
 <html>
 <head>
     <title>JMX Console WebApp Object Index</title>
@@ -22,7 +22,7 @@
 <tr><td><h2>ObjectName Instances</h2></td></tr>
 <tr><td> <br/> </td></tr>
 <%
-   Iterator mbeans = (Iterator) Server.getDomainData("");
+   Iterator mbeans = (Iterator) RequestState.getInstance(request).getServer().getDomainData("");
    int i=0;
    while( mbeans.hasNext() )
    {
