@@ -19,11 +19,13 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.jmx.adaptor.control;
+package io.cloudsoft.jmxconsole.control;
 
 import io.cloudsoft.jmxconsole.compatibility.Classes;
 import io.cloudsoft.jmxconsole.compatibility.Logger;
 import io.cloudsoft.jmxconsole.compatibility.MBeanServerLocator;
+import io.cloudsoft.jmxconsole.model.DomainData;
+import io.cloudsoft.jmxconsole.model.MBeanData;
 
 import java.beans.PropertyEditor;
 import java.beans.PropertyEditorManager;
@@ -42,8 +44,6 @@ import javax.management.MBeanParameterInfo;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 
-import org.jboss.jmx.adaptor.model.DomainData;
-import org.jboss.jmx.adaptor.model.MBeanData;
 
 /** Utility methods related to the MBeanServer interface
  *

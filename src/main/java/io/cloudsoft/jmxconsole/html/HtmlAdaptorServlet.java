@@ -19,9 +19,12 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.jboss.jmx.adaptor.html;
+package io.cloudsoft.jmxconsole.html;
 
 import io.cloudsoft.jmxconsole.compatibility.Logger;
+import io.cloudsoft.jmxconsole.control.OpResultInfo;
+import io.cloudsoft.jmxconsole.control.Server;
+import io.cloudsoft.jmxconsole.model.MBeanData;
 
 import java.io.IOException;
 import java.net.URLDecoder;
@@ -42,9 +45,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.jboss.jmx.adaptor.control.OpResultInfo;
-import org.jboss.jmx.adaptor.control.Server;
-import org.jboss.jmx.adaptor.model.MBeanData;
 
 /** The HTML adaptor controller servlet.
  *
