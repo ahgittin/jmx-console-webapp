@@ -10,7 +10,7 @@
 
 <table width="226" cellspacing="0" cellpadding="0" border="0">
 <tr>
-<td align="center" width="226" height="105"><img src="images/newlogo.gif" border="0" alt="JBoss"/></td>
+<td align="center" width="226"><img src="images/logo.png" border="0" alt="Brooklyn"/></td>
 </tr>
 </table>
 
