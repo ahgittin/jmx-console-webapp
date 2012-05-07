@@ -2,8 +2,7 @@
 <%@page contentType="text/html"
    import="java.net.*,
            java.io.*,
-   		   java.beans.PropertyEditor,
-   		   org.jboss.util.propertyeditor.PropertyEditors"
+   		   java.beans.PropertyEditor"
 %>
 <%
 String hostname = "";
@@ -73,7 +72,7 @@ catch(IOException e){}
    {
       String opResultString = null;
 
-      PropertyEditor propertyEditor = PropertyEditors.findEditor(opResultInfo.result.getClass());
+      PropertyEditor propertyEditor = null; //PropertyEditors.findEditor(opResultInfo.result.getClass());
       if(propertyEditor != null)
       {
          propertyEditor.setValue(opResultInfo.result);

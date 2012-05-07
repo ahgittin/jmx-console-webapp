@@ -1,6 +1,7 @@
 package io.cloudsoft.jmxconsole;
 
 import java.io.File;
+import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,6 +73,7 @@ public class WebAppRunner {
     }
     
     public static void main(String[] args) throws Exception {
+        ManagementFactory.getPlatformMBeanServer();  //create it
         new WebAppRunner(new File("/tmp/jmx-console-webapp.war"), 8200).start();
     }
     
