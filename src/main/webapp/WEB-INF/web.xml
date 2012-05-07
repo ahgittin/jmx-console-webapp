@@ -27,7 +27,7 @@
    -->
    <servlet>
       <servlet-name>HtmlAdaptor</servlet-name>
-      <servlet-class>org.jboss.jmx.adaptor.html.HtmlAdaptorServlet</servlet-class>
+      <servlet-class>io.cloudsoft.jmxconsole.html.HtmlAdaptorServlet</servlet-class>
    </servlet>
    <servlet>
       <servlet-name>DisplayMBeans</servlet-name>

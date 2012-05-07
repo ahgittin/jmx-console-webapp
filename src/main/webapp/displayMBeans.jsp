@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<%@page contentType="text/html" import="java.net.*,java.util.*,org.jboss.jmx.adaptor.model.*,java.io.*"%>
+<%@page contentType="text/html" import="java.net.*,java.util.*,io.cloudsoft.jmxconsole.model.*,java.io.*"%>
 <%!
  
    /**
@@ -25,8 +25,8 @@
          String serverName = "";
          try
          {
-            bindAddress = System.getProperty("jboss.bind.address", "");
-            serverName = System.getProperty("jboss.server.name", "");
+            bindAddress = System.getProperty("io.cloudsoft.jmxconsole.bind.address", "");
+            serverName = System.getProperty("io.cloudsoft.jmxconsole.server.name", "");
          }
          catch (SecurityException se) {}
 
@@ -45,7 +45,7 @@
 %>
 <html>
 <head>
-   <title>JBoss JMX Management Console - <%= hostInfo %></title>
+   <title>JMX Console WebApp - <%= hostInfo %></title>
    <link rel="stylesheet" href="style_master.css" type="text/css"/>
    <meta http-equiv="cache-control" content="no-cache"/>
 </head>

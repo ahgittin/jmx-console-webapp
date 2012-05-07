@@ -1,0 +1,4 @@
+
+This is heavily based on the JMX Console webapp (including org.jboss.jmx.adapter packages) from JBoss 6.0.
+As that is LGPL v2.1 or later this work is also licensed under LGPL v2.1 or later.
+

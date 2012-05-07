@@ -1,7 +1,9 @@
-<%@page contentType="text/html" import="java.util.*,org.jboss.jmx.adaptor.control.*,org.jboss.jmx.adaptor.model.*,java.io.*" %>
+<%@page 
+    contentType="text/html" 
+    import="java.util.*,io.cloudsoft.jmxconsole.control.*,io.cloudsoft.jmxconsole.model.*,java.io.*" %>
 <html>
 <head>
-    <title>JBoss Object Index</title>
+    <title>JMX Console WebApp Object Index</title>
     <link rel="stylesheet" href="style_master.css" type="text/css">
     <meta http-equiv="cache-control" content="no-cache"/>
 </head>

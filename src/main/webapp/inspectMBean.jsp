@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <%@page contentType="text/html"
    import="java.net.*,java.io.*,java.util.*,javax.management.*,javax.management.modelmbean.*,
-   org.jboss.jmx.adaptor.control.Server,
-   org.jboss.jmx.adaptor.control.AttrResultInfo,
-   org.jboss.jmx.adaptor.model.*,
+   io.cloudsoft.jmxconsole.control.Server,
+   io.cloudsoft.jmxconsole.control.AttrResultInfo,
+   io.cloudsoft.jmxconsole.model.*,
    java.lang.reflect.Array,
    java.io.StringWriter,
    java.beans.PropertyEditor"
@@ -120,7 +120,7 @@ catch(IOException e){}
    <meta http-equiv="cache-control" content="no-cache" />
 </head>
 
-<jsp:useBean id='mbeanData' class='org.jboss.jmx.adaptor.model.MBeanData' scope='request'/>
+<jsp:useBean id='mbeanData' class='io.cloudsoft.jmxconsole.model.MBeanData' scope='request'/>
 <%
    if(mbeanData.getObjectName() == null)
    {

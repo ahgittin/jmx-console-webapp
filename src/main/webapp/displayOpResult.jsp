@@ -24,7 +24,7 @@ catch(IOException e){}
    <meta http-equiv="cache-control" content="no-cache" />
 </head>
 
-<jsp:useBean id='opResultInfo' class='org.jboss.jmx.adaptor.control.OpResultInfo' type='org.jboss.jmx.adaptor.control.OpResultInfo' scope='request'/>
+<jsp:useBean id='opResultInfo' class='io.cloudsoft.jmxconsole.control.OpResultInfo' type='io.cloudsoft.jmxconsole.control.OpResultInfo' scope='request'/>
 <%
    if(opResultInfo.name == null)
    {
