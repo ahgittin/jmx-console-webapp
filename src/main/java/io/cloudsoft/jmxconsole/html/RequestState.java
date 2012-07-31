@@ -3,11 +3,14 @@ package io.cloudsoft.jmxconsole.html;
 import io.cloudsoft.jmxconsole.control.Server;
 
 import java.lang.management.ManagementFactory;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.management.MBeanServerConnection;
 import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
+import javax.naming.InitialContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -64,7 +67,28 @@ public class RequestState {
 
                 log.info("JMX console webapp will use JMX URL "+urlS);
                 JMXServiceURL url = new JMXServiceURL( urlS );
-                JMXConnector jmxConnector = JMXConnectorFactory.connect(url);
+                JMXConnector jmxConnector;
+                try {
+                	jmxConnector = JMXConnectorFactory.connect(url);
+                } catch (Exception e1) {
+                	// workaround for JBoss -- https://issues.jboss.org/browse/AS7-2138
+                	Map<String, String> env = new HashMap<String, String>();
+                	try {
+                		log.warn("unable to use JMXConnectorFactory ("+e1+"), trying workaround #1");
+                		// gives same error
+                		jmxConnector = JMXConnectorFactory.connect(url, env);
+                	} catch (Exception e2) {
+                		try {
+                			log.warn("unable to use JMXConnectorFactory ("+e2+"), trying workaround #2");
+                			// probably works when jboss recompiled
+                			env.put(InitialContext.INITIAL_CONTEXT_FACTORY, RMIContextFactory.class.getName());
+                			jmxConnector = JMXConnectorFactory.connect(url, env);
+                		} catch (Exception e3) {
+                			log.warn("unable to use JMXConnectorFactory ("+e3+"), out of workarounds");
+                			throw new IllegalStateException("Cannot connect to RMI URL. If on JBoss you need >=7.1.2:"+e1, e1);
+                		}
+                	}
+                }
                 mbs = jmxConnector.getMBeanServerConnection();
                 if (useMbs(mbs)) {
                     sessionState.registerMbs(urlS, mbs);
@@ -83,7 +107,7 @@ public class RequestState {
             return mbs;
         }
     }
-
+    
     private boolean useMbs(MBeanServerConnection mbs) {
         if (mbs!=null) {
             request.setAttribute("jmxconsole.last.mbeanserver", mbs);

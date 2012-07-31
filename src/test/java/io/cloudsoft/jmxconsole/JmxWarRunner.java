@@ -14,23 +14,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /** Starts the web-app running, connected to the given management context */
-public class WebAppRunner {
-    private static final Logger log = LoggerFactory.getLogger(WebAppRunner.class);
+public class JmxWarRunner {
+    private static final Logger log = LoggerFactory.getLogger(JmxWarRunner.class);
     
     private Server server;
     private int port;
     private File war;
     
-    public WebAppRunner(File war, int port) {
+    public JmxWarRunner(File war, int port) {
         setWar(war);
         setPort(port);
     }
 
-    public WebAppRunner setPort(int port) {
+    public JmxWarRunner setPort(int port) {
         this.port = port;
         return this;
     }
-    public WebAppRunner setWar(File war) {
+    public JmxWarRunner setWar(File war) {
+        if (!war.exists()) throw new IllegalStateException("WAR file not found at "+war);
         this.war = war;
         return this;
     }
@@ -40,7 +41,7 @@ public class WebAppRunner {
         log.info("Starting jmx console at http://localhost:" + port+", running "+war);
 
         server = new Server(port);
-        List<Handler> handlers = new ArrayList();
+        List<Handler> handlers = new ArrayList<Handler>();
                 
         WebAppContext context = new WebAppContext();
             
@@ -57,7 +58,7 @@ public class WebAppRunner {
         
         server.start();
 
-        log.info("Started jmx console at http://localhost:" + port+", running "+war);
+        log.info("Started jmx web console at http://localhost:" + port+", running "+war);
     }
 
     /** Asks the app server to stop and waits for it to finish up. */
@@ -73,8 +74,8 @@ public class WebAppRunner {
     }
     
     public static void main(String[] args) throws Exception {
-        ManagementFactory.getPlatformMBeanServer();  //create it
-        new WebAppRunner(new File("/tmp/jmx-console-webapp.war"), 8200).start();
+        ManagementFactory.getPlatformMBeanServer();  //create local mbean server for test
+        new JmxWarRunner(new File("/tmp/jmx-console-webapp.war"), 8200).start();
     }
     
 }

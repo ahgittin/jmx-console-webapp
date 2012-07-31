@@ -30,6 +30,7 @@ import javax.servlet.http.HttpSession;
  * @author Scott.Stark@jboss.org
  * @version $Revision: 81662 $
  */
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class HtmlAdaptorServlet extends HttpServlet
 {
    private static final long serialVersionUID = 1L;
@@ -348,7 +349,6 @@ public class HtmlAdaptorServlet extends HttpServlet
       });
    }
    
-   @SuppressWarnings("unchecked")
    private Iterator getDomainData(final HttpServletRequest request, final String filter) throws PrivilegedActionException
    {
       return AccessController.doPrivileged(new PrivilegedExceptionAction<Iterator>()
@@ -382,7 +382,6 @@ public class HtmlAdaptorServlet extends HttpServlet
       });
    }
    
-   @SuppressWarnings({"unchecked"})
    private AttributeList setAttributes(final HttpServletRequest request, final String name, final HashMap attributes) throws PrivilegedActionException
    {
       return AccessController.doPrivileged(new PrivilegedExceptionAction<AttributeList>()

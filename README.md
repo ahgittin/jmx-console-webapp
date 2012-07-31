@@ -14,6 +14,11 @@ to the http request (or a servlet attribute, or system property, then finally it
 
 ![Screenshot](https://github.com/ahgittin/jmx-console-webapp/blob/master/docs/screenshot.png?raw=true "Screenshot")
 
+You can see more screenshots in the usage of this webapp in the 
+[brooklyn-jmx-console-demo project](http://github.com/ahgittin/brooklyn-jmx-console-demo/),
+where this is used to drill-down on JMX details exposed by 
+[Brooklyn](http://brooklyncentral.brooklyn.github) entities.
+
 ## Wishlist
 
 * Authenticated JMX support (SSL, user, and password) 
